@@ -1,0 +1,58 @@
+<aura:component description="OpportunityLineItem">
+
+    <aura:attribute name="opportunityProducts" type="OpportunityLineItem"/>
+    <aura:attribute name="opportunityId" type="String"/>
+    <aura:attribute name="index" type="Id"/>
+
+    <tr>
+        <td style="width: 40%">
+            <c:OppProdSearch
+                    updateUnitPrice="{!v.opportunityProducts.UnitPrice}"
+                    selectRecordName="{!v.opportunityProducts.Product2}"
+                    required="false"
+                    iconName="standard:product"
+                    updatedRecordId="{!v.opportunityProducts.productToUpgrade}"
+                    opportunityId="{!v.opportunityId}"/>
+
+        </td>
+        <td>
+            <lightning:input
+                    type="number"
+                    variant="label-hidden"
+                    name="Quantity"
+                    value="{!v.opportunityProducts.Quantity}"
+                    label=''/>
+        </td>
+
+        <td>
+            <lightning:input
+                    type="number"
+                    variant="label-hidden"
+                    name="UnitPrice"
+                    value="{!v.opportunityProducts.UnitPrice}"
+                    label=''/>
+        </td>
+
+        <td>
+            <lightning:input
+                    value="{!v.opportunityProducts.ServiceDate}"
+                    label=''
+                    class="field"
+                    type="date"
+                    variant="label-hidden"
+                    name="ServiceDate"
+            />
+
+        </td>
+
+        <td>
+            <lightning:input
+                    type="text"
+                    variant="label-hidden"
+                    name="description"
+                    value="{!v.opportunityProducts.Description}"
+                    label=''/>
+        </td>
+    </tr>
+
+</aura:component>

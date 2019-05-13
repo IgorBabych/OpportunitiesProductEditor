@@ -1,0 +1,22 @@
+<apex:page
+        id="OpportunityProductEditor"
+        showHeader="false"
+        sidebar="false"
+        standardStylesheets="true"
+        standardController="Opportunity">
+
+    <apex:includeLightning/>
+    <div id="oppProds"></div>
+    <script>
+        $Lightning.use("c:OpportunityProductApp", function () {
+            $Lightning.createComponent("c:OpportunityProducts", {}, "oppProds",
+                function(cmp) {
+                    console.log("Component created!");
+                    console.log(cmp);
+                });
+        });
+        recordId = Apexpages.currentPage().getParameters().get('Id');
+        alert(recordId);
+    </script>
+
+</apex:page>
