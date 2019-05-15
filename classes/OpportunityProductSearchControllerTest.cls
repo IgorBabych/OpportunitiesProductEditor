@@ -9,6 +9,7 @@ public with sharing class OpportunityProductSearchControllerTest {
         productMap_1.put('TestQ', 5);
         productMap_1.put('TestL', 5);
 
+
         List<Product2> products_1 = TestDataFactory.createProducts(productMap_1);
 
         Id opportunityId_1 = TestDataFactory.createOpportunity();

@@ -12,7 +12,8 @@
                     required="false"
                     iconName="standard:product"
                     updatedRecordId="{!v.opportunityProducts.productToUpgrade}"
-                    opportunityId="{!v.opportunityId}"/>
+                    opportunityId="{!v.opportunityId}"
+                    />
 
         </td>
         <td>

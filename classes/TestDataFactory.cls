@@ -146,7 +146,6 @@ public class TestDataFactory {
             );
             opportunityLineItems.add(oppLnItm);
         }
-        System.debug('Standard' + JSON.serializePretty(opportunityLineItems));
         insert opportunityLineItems;
     }
 
@@ -173,7 +172,6 @@ public class TestDataFactory {
             opportunityLineItems.add(oppLnItm);
         }
 
-        System.debug('Custom' + JSON.serializePretty(opportunityLineItems));
         insert opportunityLineItems;
     }
 }

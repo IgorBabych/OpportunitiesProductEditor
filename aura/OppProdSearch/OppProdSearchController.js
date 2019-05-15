@@ -9,5 +9,6 @@
 
     closeIconController: function (component, event, helper) {
         helper.resetData(component, event);
-    }
+    },
+
 })

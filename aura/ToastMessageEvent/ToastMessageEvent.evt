@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="ToastMessageEvent">
+    <aura:attribute name="contents" type="String" />
+    <aura:attribute name="state" type="String" />
+</aura:event>

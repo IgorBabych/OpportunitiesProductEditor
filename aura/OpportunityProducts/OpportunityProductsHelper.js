@@ -11,7 +11,7 @@
                 var updatedOppProd = this.handleOppProdFields (oppProd);
                 component.set("v.opportunityProducts", updatedOppProd);
             } else {
-                console.log("Failed with state: " + state);
+                this.showToast('error', "Failed with state: " + state);
             }
         });
         $A.enqueueAction(action);
@@ -53,12 +53,12 @@
         let action = component.get("c.upsertOpportunityLineItems");
         action.setParam("oppLineItem", opportunityProductsToUpsert);
         action.setCallback(this, function (response) {
-            var state = response.getState();
+            let state = response.getState();
             if (state === "SUCCESS") {
-                alert('Changes saved!');
+                this.showToast('success', 'Changes saved!');
                 $A.get('e.force:refreshView').fire();
             } else {
-                alert('Changes ' + state);
+                this.showToast('error', 'Changes ' + state);
             }
         });
         $A.enqueueAction(action);
@@ -117,6 +117,20 @@
             if (oppProd.Product2) oppProd.Product2 = oppProd.Product2.Name;
         }
         return oppProds;
+    },
+
+    closePage : function (oppProds){
+        $A.get('e.force:closeQuickAction').fire();
+    },
+
+
+    showToast : function(state, contents) {
+        var messageEvent = $A.get("e.c:ToastMessageEvent");
+        messageEvent.setParams({
+            "state": state,
+            "contents": contents
+        });
+        messageEvent.fire();
     },
 
 

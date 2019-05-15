@@ -4,10 +4,15 @@
         implements="force:hasRecordId,
                     force:lightningQuickActionWithoutHeader,
                     flexipage:availableForRecordHome">
+
+<!--    <lightning:notificationsLibrary aura:id="notifLib"/>-->
+
     <aura:handler
             name="init"
             action="{!c.doInit}"
             value="{!this}"/>
+
+    <aura:registerEvent name="messageEvent" type="c:ToastMessageEvent" />
 
     <aura:attribute
             name="opportunityProducts"
@@ -38,14 +43,16 @@
         max-width: 70rem;
         }
         .modal-body{
-        height : 500px !important;
-        max-height: 500px !important;
+        height : 100% !important;
+        max-height: 100% !important;
         }
 
         .customFooter{
         display: inline !important;
         }
     </aura:html>
+
+    <c:ToastMessage timeout = "1000"/>
 
     <div class="slds-p-around_medium
                 slds-text-align_center
@@ -55,30 +62,39 @@
         </h1>
     </div>
 
+    <div class="slds-table--header-fixed_container" style="height:300px">
+        <div class="slds-scrollable" style="height:100%;">
+
     <table class="slds-table
                     slds-table_cell-buffer
-                    slds-table_bordered ">
+                    slds-table_bordered
+           slds-table--header-fixed">
         <thead>
         <tr>
             <th scope="col">
-                PRODUCT
+                <div class="slds-truncate slds-cell-fixed" title="PRODUCT">PRODUCT</div>
             </th>
             <th scope="col">
-                QUANTITY
+                <div class="slds-truncate slds-cell-fixed" title="QUANTITY">QUANTITY</div>
+
             </th>
             <th scope="col">
-                SALES PRICE
+                <div class="slds-truncate slds-cell-fixed" title="SALES PRICE">SALES PRICE</div>
+
             </th>
             <th scope="col">
-                DATE
+                <div class="slds-truncate slds-cell-fixed" title="DATE">DATE</div>
+
             </th>
             <th scope="col">
-                LINE DESCRIPTION
+                <div class="slds-truncate slds-cell-fixed" title="LINE DESCRIPTION">LINE DESCRIPTION</div>
+
             </th>
         </tr>
         </thead>
 
         <tbody>
+
         <aura:iteration
                 items="{!v.opportunityProducts}"
                 var="opportunityProduct"
@@ -86,22 +102,30 @@
             <c:OpportunityLineItem
                     opportunityProducts="{!opportunityProduct}"
                     index="{!opportunityProduct.Product2Id}"
-                    opportunityId="{!v.opportunityId}"/>
+                    opportunityId="{!v.opportunityId}"
+                    />
         </aura:iteration>
-        </tbody>
-    </table>
 
-    <div class="slds-p-around_medium
+        </tbody>
+
+    </table>
+        </div>
+    </div>
+    <div class="slds-p-around_small
                 slds-text-align_right">
+
         <lightning:button
                 label="Cancel"
                 onclick="{!c.clickCancelButton}"/>
 
         <lightning:button
+                label="Show Notice"
+                onclick="{!c.clickReloadDataButton}"
+        name="notice" />
+        <lightning:button
                 label="Save"
                 variant="brand"
                 onclick="{!c.clickSaveButton}"/>
     </div>
-
 </aura:component>
 

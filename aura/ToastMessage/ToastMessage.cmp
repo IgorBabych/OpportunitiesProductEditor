@@ -1,0 +1,39 @@
+<aura:component description="ToastMessage">
+
+    <aura:attribute name="visible" type="Boolean" default="false" />
+    <aura:attribute name="contents" type="String" />
+    <aura:attribute name="state" type="String" />
+    <aura:attribute name="toastTheme" type="String" />
+    <aura:attribute name="iconTheme" type="String" />
+    <aura:attribute name="timeout" type="Integer" />
+    <aura:attribute
+            name="iconName"
+            type="String"
+            default="action:approval"/>
+
+
+    <aura:handler event="c:ToastMessageEvent"
+                  action="{!c.componentEvent}"/>
+
+    <aura:if isTrue="{!v.visible}">
+        <div class="slds-notify_container slds-is-relative slds-m-bottom_small" style="position: absolute">
+            <div class="{!v.toastTheme}" role="status" aura:id="notifyToast">
+                <span class="{!v.iconTheme}"
+                      aura:id="notifyIcon">
+                    <lightning:icon iconName="{!v.iconName}" size="small" variant="inverse"/>
+                </span>
+                <div class="slds-notify__content">
+                    <h2 class="slds-text-heading_small">
+                        {!v.contents}
+                    </h2>
+                </div>
+                <div class="slds-notify__close">
+                    <lightning:buttonIcon iconName="utility:close" onclick="{! c.handleCloseClick }" size="small"
+                                          variant="bare-inverse"/>
+                </div>
+            </div>
+        </div>
+
+    </aura:if>
+
+</aura:component>

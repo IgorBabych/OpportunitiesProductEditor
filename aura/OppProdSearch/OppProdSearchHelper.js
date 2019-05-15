@@ -14,6 +14,7 @@
             "opportunityId": component.get("v.opportunityId"),
             "value": currentText
         });
+
         action.setCallback(this, function (response) {
             var state = response.getState();
             if (state === "SUCCESS") {
