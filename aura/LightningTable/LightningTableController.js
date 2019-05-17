@@ -1,4 +1,5 @@
-/**
- * Created by Igor Babych on 16.05.2019.
- */
-({})
+({
+    doInit : function(component, event, helper) {
+        helper.doInit(component, event, helper);
+    }
+})

@@ -30,10 +30,21 @@
     setSelectedRecord: function (component, event, helper) {
         var resultBox = component.find('resultBox');
         $A.util.removeClass(resultBox, 'slds-is-open');
-        component.set("v.selectRecordName", event.currentTarget.dataset.name);
-        component.set("v.updateUnitPrice", event.currentTarget.dataset.price);
+        let oldRecord = component.get('v.updateRecord');
+        let recordForUpdate = component.get('v.updateRecord');
+        recordForUpdate.UnitPrice = event.currentTarget.dataset.price;
+        component.set('v.updateRecord', recordForUpdate);
+        var recAtt = component.get("v.updateRecord");
+        alert(recAtt.UnitPrice);
         component.set("v.updatedRecordId", event.currentTarget.id);
         component.find('userinput').set("v.readonly", true);
+        var updateProductEvent = component.getEvent("UpdateProduct");
+        updateProductEvent.setParams({
+            "updateRecord" :null,
+            "row" :null
+        });
+        console.log('was fired');
+        updateProductEvent.fire();
     },
 
     resetData: function (component, event, helper) {

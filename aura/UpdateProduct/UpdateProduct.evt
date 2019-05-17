@@ -3,4 +3,6 @@
  -->
 
 <aura:event type="COMPONENT" description="UpdateProduct">
+    <aura:attribute name="updateRecord" type="sObject" />
+    <aura:attribute name="row" type="sObject" />
 </aura:event>

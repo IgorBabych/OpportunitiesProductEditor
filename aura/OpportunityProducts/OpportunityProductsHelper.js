@@ -1,8 +1,68 @@
 ({
+
+    getTableFieldSet : function(component, event, helper) {
+        var action = component.get("c.getFieldSet");
+        action.setParams({
+            sObjectName: component.get("v.sObjectName"),
+            fieldSetName: component.get("v.fieldSetName")
+        });
+
+        action.setCallback(this, function(response) {
+            var fieldSetObj = JSON.parse(response.getReturnValue());
+//alert(response.getReturnValue());
+            component.set("v.fieldSetValues", fieldSetObj);
+            //Call helper method to fetch the records
+            helper.getTableRows(component, event, helper);
+        })
+        $A.enqueueAction(action);
+    },
+
+    getTableRows : function(component, event, helper){
+        var action = component.get("c.getRecords");
+        var fieldSetValues = component.get("v.fieldSetValues");
+        var setfieldNames = new Set();
+        for(var c=0, clang=fieldSetValues.length; c<clang; c++){
+            if(!setfieldNames.has(fieldSetValues[c].name)) {
+                setfieldNames.add(fieldSetValues[c].name);
+                if(fieldSetValues[c].type == 'REFERENCE') {
+                    if(fieldSetValues[c].name.indexOf('__c') == -1) {
+                        setfieldNames.add(fieldSetValues[c].name.substring(
+                            0, fieldSetValues[c].name.indexOf('Id')) + '.Name');}
+                    else {setfieldNames.add(fieldSetValues[c].name.substring(
+                        0, fieldSetValues[c].name.indexOf('__c')) + '__r.Name');}}}}
+        var arrfieldNames = [];
+        setfieldNames.forEach(v => arrfieldNames.push(v));
+        console.log(arrfieldNames);
+
+        action.setParams({
+            sObjectName: component.get("v.sObjectName"),
+            parentFieldName: component.get("v.parentFieldName"),
+            parentRecordId: component.get("v.parentRecordId"),
+            fieldNameJson: JSON.stringify(arrfieldNames)
+        });
+        action.setCallback(this, function(response) {
+            var list = JSON.parse(response.getReturnValue());
+            console.log("------------------------");
+            console.log(JSON.stringify(list));
+            console.log("------------------------");
+            component.set("v.tableRecords", list);
+ //           alert(response.getReturnValue());
+ //           alert(list[0].Product2.Name);
+        })
+        $A.enqueueAction(action);
+    },
+
+    createTableRows : function(component, event, helper){
+
+    },
+
+
+
     getOpportunityLineItems: function (component, event, helper) {
         var action = component.get("c.getOpportunityLineItems");
         const oppId = component.get("v.recordId");
         component.set("v.opportunityId", oppId);
+        component.set("v.parentRecordId", oppId);
         action.setParam("oppId", oppId);
         action.setCallback(this, function (response) {
             var state = response.getState();

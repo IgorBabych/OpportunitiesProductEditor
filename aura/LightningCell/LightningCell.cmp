@@ -1,6 +1,79 @@
-<!--
- - Created by Igor Babych on 16.05.2019.
- -->
+<aura:component access="global">
+    <aura:attribute name="record" type="sObject" description="record which is being displayed"/>
+    <aura:attribute name="field" type="Object" description="field object which is being rendered"/>
+    <aura:attribute name="cellValue" type="Object"/>
+    <aura:attribute name="cellLabel" type="String"/>
+    <aura:attribute name="isTextField" type="boolean" default="false"/>
+    <aura:attribute name="isReferenceField" type="boolean" default="false"/>
+    <aura:attribute name="isDateField" type="boolean" default="false"/>
+    <aura:attribute name="isDateTimeField" type="boolean" default="false"/>
+    <aura:attribute name="isCurrencyField" type="boolean" default="false"/>
+    <aura:attribute name="isDoubleField" type="boolean" default="false"/>
+    <aura:attribute name="isProductLookupField" type="boolean" default="false"/>
+    <aura:attribute name="opportunityId" type="String"/>
+    <aura:attribute name="opportunityProducts" type="OpportunityLineItem"/>
 
-<aura:component description="LightningCell">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <aura:handler name="UpdateProduct" event="c:UpdateProduct" action="{!c.rerenderTable}"/>
+
+<!--    <aura:registerEvent name="messageEvent" type="c:ToastMessageEvent"/>-->
+
+    <aura:if isTrue="{!v.isProductLookupField}">
+        <c:OppProdSearch
+                updateRecord="{!v.record}"
+                updateUnitPrice="{!v.record.UnitPrice}"
+                selectRecordName="{!v.cellValue}"
+                required="false"
+                iconName="standard:product"
+                updatedRecordId="{!v.record.productToUpgrade}"
+                opportunityId="{!v.opportunityId}"
+        />
+    </aura:if>
+
+    <aura:if isTrue="{!v.isTextField}">
+        <lightning:input
+                type="text"
+                variant="label-hidden"
+                name="{!v.cellLabel}"
+                value="{!v.cellValue}"
+                label=''/>
+    </aura:if>
+    <aura:if isTrue="{!v.isDateField}">
+        <lightning:input
+                type="date"
+                variant="label-hidden"
+                name="{!v.cellLabel}"
+                value="{!v.cellValue}"
+                label=''/>
+    </aura:if>
+    <aura:if isTrue="{!v.isDateTimeField}">
+        <lightning:input
+                type="datetime-local"
+                variant="label-hidden"
+                name="{!v.cellLabel}"
+                value="{!v.cellValue}"
+                label=''/>
+    </aura:if>
+    <aura:if isTrue="{!v.isCurrencyField}">
+        <lightning:input
+                type="number"
+                variant="label-hidden"
+                name="{!v.cellLabel}"
+                value="{!v.cellValue}"
+                label=''
+                onchange="{!c.doInit}"/>
+    </aura:if>
+    <aura:if isTrue="{!v.isDoubleField}">
+        <lightning:input
+                type="number"
+                variant="label-hidden"
+                name="{!v.cellLabel}"
+                value="{!v.cellValue}"
+                label=''/>
+    </aura:if>
+    <aura:if isTrue="{!v.isReferenceField}">
+        <ui:outputURL value="{!'/one/one.app?#/sObject/'+ v.cellValue + '/view'}" target="_blank"
+                      label="{!v.cellLabel}"/>
+    </aura:if>
 </aura:component>
