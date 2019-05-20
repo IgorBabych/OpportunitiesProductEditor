@@ -32,7 +32,7 @@
                         0, fieldSetValues[c].name.indexOf('__c')) + '__r.Name');}}}}
         var arrfieldNames = [];
         setfieldNames.forEach(v => arrfieldNames.push(v));
-        console.log(arrfieldNames);
+ //       console.log(arrfieldNames);
 
         action.setParams({
             sObjectName: component.get("v.sObjectName"),
@@ -42,7 +42,7 @@
         });
         action.setCallback(this, function(response) {
             var list = JSON.parse(response.getReturnValue());
-            console.log("------------------------");
+            console.log("-----------RAW tableRecords-------------");
             console.log(JSON.stringify(list));
             console.log("------------------------");
             component.set("v.tableRecords", list);
@@ -191,23 +191,7 @@
             "contents": contents
         });
         messageEvent.fire();
-    },
+    }
 
-
-    handleRowAction: function (cmp, event, helper) {
-        var action = event.getParam('action');
-        var row = event.getParam('row');
-        switch (action.name) {
-            case 'show_details':
-                alert('Showing Details: ' + JSON.stringify(row));
-                break;
-            case 'delete':
-                var rows = cmp.get('v.mydata');
-                var rowIndex = rows.indexOf(row);
-                rows.splice(rowIndex, 1);
-                cmp.set('v.mydata', rows);
-                break;
-        }
-    },
 
 });

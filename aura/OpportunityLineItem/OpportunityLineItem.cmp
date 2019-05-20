@@ -1,16 +1,97 @@
 <aura:component description="OpportunityLineItem">
 
-    <aura:attribute name="opportunityId" type="String"/>
-    <aura:attribute name="opportunityProduct" type="OpportunityLineItem"/>
-    <aura:attribute name="fieldSetValues" type="List"/>
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
 
-    
-    <c:OppProdSearch
-            updateRecord="{!v.opportunityProduct}"
-            selectRecordName="{!v.opportunityProduct.Name}"
-            required="false"
-            iconName="standard:product"
-            updatedRecordId="{!v.opportunityProduct.productToUpgrade}"
-            opportunityId="{!v.opportunityId}"
-    />
+    <aura:attribute name="opportunityId" type="String"/>
+    <aura:attribute name="opportunityProduct" type="SObject"/>
+    <aura:attribute name="fieldSetValues" type="List"/>
+    <aura:attribute name="selectRecordName" type="String"/>
+    <aura:attribute name="rowId" type="String" access="private"/>
+    <aura:attribute name="justOneMoreFieldValue" type="String" access="private"/>
+
+    <aura:attribute name="fieldValues" type="List" access="private"/>
+    <aura:attribute name="fieldNames" type="String"/>
+
+    <aura:attribute name="rowIndex" type="String"/>
+
+    <aura:handler name="UpdateProduct" event="c:UpdateProduct" action="{!c.doInit}"/>
+
+
+    <tr id="">
+    <aura:iteration items="{!v.fieldValues}" var="fieldValue">
+        <td>
+<!--{!v.rowId}-->
+            <aura:if isTrue="{!v.rowId == v.rowIndex}">
+                <aura:if isTrue="{!fieldValue.name == 'Product2Id'}">
+                    <c:OppProdSearch
+                            updateUnitPrice="{!v.opportunityProduct.UnitPrice}"
+                            updateRecord="{!v.opportunityProduct}"
+                            selectRecordName="{!v.selectRecordName}"
+                            required="false"
+                            iconName="standard:product"
+                            updatedRecordId="{!v.opportunityProduct.productToUpgrade}"
+                            opportunityId="{!v.opportunityId}"/>
+                    <aura:set attribute="else">
+
+                        <lightning:input
+                                type="{!v.fieldValue.type}"
+                                aura:id="userinput"
+                                variant="label-hidden"
+                                name="searchText"
+                                value="{!fieldValue.fieldValue}"
+                                class="leftspace"
+                                label=''/>
+
+                      <!--<c:InputFIeldComponent fieldValue="{!fieldValue}" opportunityProduct = "{!v.opportunityProduct}"/>-->
+                    </aura:set>
+                </aura:if>
+            </aura:if>
+            <!--"{!v.opportunityProduct.fieldName}"-->
+        </td>
+    </aura:iteration>
+    </tr>
+
+
+
+
+
+
+
+<!--
+
+    <tr>
+
+        <td>
+            <c:OppProdSearch
+                    updateUnitPrice="{!v.opportunityProduct.UnitPrice}"
+                    updateRecord="{!v.opportunityProduct}"
+                    selectRecordName="{!v.selectRecordName}"
+                    required="false"
+                    iconName="standard:product"
+                    updatedRecordId="{!v.opportunityProduct.productToUpgrade}"
+                    opportunityId="{!v.opportunityId}"/>
+        </td>
+        <td>
+            <lightning:input
+                    type = "number"
+                    aura:id="userinput"
+                    variant="label-hidden"
+                    name="searchText"
+                    value="{!v.opportunityProduct.UnitPrice}"
+                    class="leftspace"/>
+
+        </td>
+        <aura:iteration items="{!v.fieldSetValues}" var="field">
+            <td>{!field.name} </td>
+        </aura:iteration>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+    </tr>
+-->
+
+
 </aura:component>

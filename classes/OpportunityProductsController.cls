@@ -62,6 +62,7 @@ public with sharing class OpportunityProductsController {
         catch(Exception e){
             result += e.getLineNumber() + ' : ' + e.getMessage();
         }
+        System.debug(JSON.serialize(result));
         return result;
     }
 

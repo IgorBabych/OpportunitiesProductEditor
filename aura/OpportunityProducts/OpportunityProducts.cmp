@@ -72,57 +72,70 @@
         </h1>
     </div>
 
-    <div class="slds-table--header-fixed_container" style="height:300px">
-        <div class="slds-scrollable" style="height:100%;">
+<!--    <div class="slds-table&#45;&#45;header-fixed_container" style="height:300px">-->
+<!--        <div class="slds-scrollable" style="height:100%;">-->
 
-            <table class="slds-table
-                    slds-table_cell-buffer
-                    slds-table_bordered
-           slds-table--header-fixed">
-                <thead>
-                <tr>
-                    <aura:iteration items="{!v.fieldSetValues}" var="field">
-                        <th scope="col">
-                            <div class="slds-truncate slds-cell-fixed" title="PRODUCT">
-                                {!field.label}
-                            </div>
-                        </th>
-                    </aura:iteration>
-                </tr>
-                </thead>
+<!--            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table&#45;&#45;header-fixed">-->
+<!--                <thead>-->
+<!--                <tr>-->
+<!--                    <aura:iteration items="{!v.fieldSetValues}" var="field">-->
+<!--                        <th scope="col">-->
+<!--                            <div class="slds-truncate slds-cell-fixed" title="PRODUCT">-->
+<!--                                {!field.label}-->
+<!--                            </div>-->
+<!--                        </th>-->
+<!--                    </aura:iteration>-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                <aura:iteration items="{!v.tableRecords}" var="row">-->
+<!--                    <tr>-->
+<!--                        <aura:iteration items="{!v.fieldSetValues}" var="field">-->
+<!--                            <td>-->
+<!--                                <c:LightningCell-->
+<!--                                        record="{!row}"-->
+<!--                                        field="{!field}"-->
+<!--                                        opportunityProducts="{!opportunityProduct}"-->
+<!--                                        opportunityId="{!v.opportunityId}"/>-->
+<!--                            </td>-->
+<!--                        </aura:iteration>-->
+<!--                    </tr>-->
+<!--                </aura:iteration>-->
 
-                <tbody>
+<!--                </tbody>-->
 
-                <aura:iteration items="{!v.tableRecords}" var="row">
-                    <tr>
-                        <aura:iteration items="{!v.fieldSetValues}" var="field">
-                            <td>
-                                <c:LightningCell
-                                        record="{!row}"
-                                        field="{!field}"
-                                        opportunityProducts="{!opportunityProduct}"
-                                        opportunityId="{!v.opportunityId}"/>
-                            </td>
-                        </aura:iteration>
-                    </tr>
+<!--            </table>-->
+<!--        </div>-->
+<!--    </div>-->
+    <!--  BODY  -->
+    <div class="slds">
+        <table class="slds-table slds-table--bordered">
+            <thead>
+            <tr>
+                <aura:iteration items="{!v.fieldSetValues}" var="field">
+                    <th scope="col">
+                        <div class="slds-truncate" title="{!field.label}"> {!field.label} </div>
+                    </th>
+                </aura:iteration>
+            </tr>
+            </thead>
+            <tbody>
+
+                <aura:iteration items="{!v.tableRecords}" var="row" indexVar="index">
+
+                        <c:OpportunityLineItem opportunityId="{!v.opportunityId}" opportunityProduct="{!row}"
+                                               fieldSetValues="{!v.fieldSetValues}"
+                                               rowIndex = "{!index}"/>
+
+
                 </aura:iteration>
 
-                </tbody>
-
-            </table>
-        </div>
+            </tbody>
+        </table>
     </div>
--------------------------------------------------------------------------------------------------------
-    <aura:iteration items="{!v.tableRecords}" var="row">
-        <div style="width: 100%; height: 100%">
-            <c:OpportunityLineItem opportunityId="{!v.opportunityId}" opportunityProduct="{!row}"
-                                   fieldSetValues="{!v.fieldSetValues}"/>
-        </div>
-    </aura:iteration>
 
-    <div class="slds-p-around_small
-                slds-text-align_right">
-
+    <!--  FOOTER  -->
+    <div class="slds-p-around_small slds-text-align_right">
         <lightning:button
                 label="Cancel"
                 onclick="{!c.clickCancelButton}"/>

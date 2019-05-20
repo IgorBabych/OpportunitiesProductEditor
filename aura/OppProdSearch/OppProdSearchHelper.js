@@ -40,9 +40,11 @@
         component.find('userinput').set("v.readonly", true);
         var updateProductEvent = component.getEvent("UpdateProduct");
         updateProductEvent.setParams({
-            "updateRecord" :null,
-            "row" :null
+            "oldValue": oldRecord,
+            "fieldLabel": 'price',
+            "newWalue": recordForUpdate
         });
+
         console.log('was fired');
         updateProductEvent.fire();
     },

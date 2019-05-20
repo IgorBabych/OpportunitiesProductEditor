@@ -2,11 +2,10 @@
     doInit: function (component, event, helper) {
         helper.getOpportunityLineItems(component);
         helper.getTableFieldSet(component, event, helper);
-        console.log('1 tableRecords = ' + JSON.stringify(component.get('v.tableRecords')));
     },
 
     handleChangeProduct: function (component, event, helper) {
-        console.log('2 tableRecords = ' + JSON.stringify(component.get('v.tableRecords')));
+        console.log('___handleChangeProduct Opportunity product helper v.tableRecords ' + JSON.stringify(component.get('v.tableRecords')));
         component.get('v.tableRecords', []);
     },
 
@@ -22,5 +21,9 @@
 
     clickCancelButton: function (component, event, helper) {
         helper.closePage(component);
+    },
+
+    handleChangeProduct: function (component, event, helper) {
+
     }
 })

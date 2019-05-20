@@ -1,0 +1,19 @@
+<!--
+ - Created by Igor Babych on 17.05.2019.
+ -->
+
+<aura:component description="InputFIeldComponent">
+    <aura:attribute name="fieldValue" type="Object" />
+    <aura:attribute name="opportunityProduct" type="SObject" />
+    <aura:attribute name="value1" type="Object" access="private"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="UpdateProduct" event="c:UpdateProduct" action="{!c.handleChangeProduct}"/>
+    <lightning:input
+            type="{!v.fieldValue.type}"
+            aura:id="userinput"
+            variant="label-hidden"
+            name="searchText"
+            value="{!v.value1}"
+            class="leftspace"
+            label=''/>
+</aura:component>

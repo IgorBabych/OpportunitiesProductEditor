@@ -49,14 +49,14 @@
                                 </span>
                             </aura:if>
 
-                            <lightning:input
-                                    required="{!v.required}"
-                                    aura:id="userinput"
-                                    variant="label-hidden"
-                                    label="{!v.Label}"
-                                    name="searchText"
-                                    value="{!v.updateRecord.UnitPrice}"
-                                    class="leftspace"/>
+<!--                            <lightning:input-->
+<!--                                    required="{!v.required}"-->
+<!--                                    aura:id="userinput"-->
+<!--                                    variant="label-hidden"-->
+<!--                                    label="{!v.Label}"-->
+<!--                                    name="searchText"-->
+<!--                                    value="{!v.updateRecord.UnitPrice}"-->
+<!--                                    class="leftspace"/>-->
 
                             <lightning:input
                                     required="{!v.required}"

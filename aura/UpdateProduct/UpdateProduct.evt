@@ -2,7 +2,11 @@
  - Created by Igor Babych on 16.05.2019.
  -->
 
-<aura:event type="COMPONENT" description="UpdateProduct">
-    <aura:attribute name="updateRecord" type="sObject" />
-    <aura:attribute name="row" type="sObject" />
+<aura:event type="APPLICATION" description="UpdateProduct">
+    <aura:attribute name="oldValue" type="Object" />
+    <aura:attribute name="fieldLabel" type="String" />
+    <aura:attribute name="newWalue" type="Object" />
+<!--    <aura:attribute name="row" type="sObject" />-->
+
+
 </aura:event>
