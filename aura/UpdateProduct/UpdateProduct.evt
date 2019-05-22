@@ -3,10 +3,5 @@
  -->
 
 <aura:event type="APPLICATION" description="UpdateProduct">
-    <aura:attribute name="oldValue" type="Object" />
-    <aura:attribute name="fieldLabel" type="String" />
-    <aura:attribute name="newWalue" type="Object" />
-<!--    <aura:attribute name="row" type="sObject" />-->
-
-
+    <aura:attribute name="UnitPrice" type="String" />
 </aura:event>

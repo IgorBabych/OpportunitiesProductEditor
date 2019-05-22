@@ -9,83 +9,39 @@
 
         action.setCallback(this, function(response) {
             var fieldSetObj = JSON.parse(response.getReturnValue());
-//alert(response.getReturnValue());
             component.set("v.fieldSetValues", fieldSetObj);
-            //Call helper method to fetch the records
             helper.getTableRows(component, event, helper);
-        })
+        });
         $A.enqueueAction(action);
     },
 
     getTableRows : function(component, event, helper){
-        var action = component.get("c.getRecords");
-        var fieldSetValues = component.get("v.fieldSetValues");
-        var setfieldNames = new Set();
-        for(var c=0, clang=fieldSetValues.length; c<clang; c++){
-            if(!setfieldNames.has(fieldSetValues[c].name)) {
-                setfieldNames.add(fieldSetValues[c].name);
-                if(fieldSetValues[c].type == 'REFERENCE') {
-                    if(fieldSetValues[c].name.indexOf('__c') == -1) {
-                        setfieldNames.add(fieldSetValues[c].name.substring(
-                            0, fieldSetValues[c].name.indexOf('Id')) + '.Name');}
-                    else {setfieldNames.add(fieldSetValues[c].name.substring(
-                        0, fieldSetValues[c].name.indexOf('__c')) + '__r.Name');}}}}
-        var arrfieldNames = [];
-        setfieldNames.forEach(v => arrfieldNames.push(v));
- //       console.log(arrfieldNames);
+        let action = component.get("c.getRecords");
+        let fieldSetValues = component.get("v.fieldSetValues");
+        let fieldNames = this.getFieldNames(fieldSetValues);
 
         action.setParams({
             sObjectName: component.get("v.sObjectName"),
             parentFieldName: component.get("v.parentFieldName"),
             parentRecordId: component.get("v.parentRecordId"),
-            fieldNameJson: JSON.stringify(arrfieldNames)
+            fieldNameJson: JSON.stringify(fieldNames)
         });
+
         action.setCallback(this, function(response) {
-            var list = JSON.parse(response.getReturnValue());
-            console.log("-----------RAW tableRecords-------------");
-            console.log(JSON.stringify(list));
-            console.log("------------------------");
-            component.set("v.tableRecords", list);
- //           alert(response.getReturnValue());
- //           alert(list[0].Product2.Name);
-        })
-        $A.enqueueAction(action);
-    },
-
-    createTableRows : function(component, event, helper){
-
-    },
-
-
-
-    getOpportunityLineItems: function (component, event, helper) {
-        var action = component.get("c.getOpportunityLineItems");
-        const oppId = component.get("v.recordId");
-        component.set("v.opportunityId", oppId);
-        component.set("v.parentRecordId", oppId);
-        action.setParam("oppId", oppId);
-        action.setCallback(this, function (response) {
-            var state = response.getState();
-            if (state === "SUCCESS") {
-                var oppProd = response.getReturnValue();
-                var updatedOppProd = this.handleOppProdFields (oppProd);
-                component.set("v.opportunityProducts", updatedOppProd);
-            } else {
-                this.showToast('error', "Failed with state: " + state);
-            }
+            let tableRecords = JSON.parse(response.getReturnValue());
+            component.set("v.tableRecords", tableRecords);
         });
         $A.enqueueAction(action);
     },
-
 
     updateOpportunityLineItems: function (component, event, helper) {
-        var eventSource = event.getSource();
-        var opportunityProductsToIterate = component.get("v.opportunityProducts");
-        var opportunityProductsToUpsert = [];
-        var opportunityProductsToDelete = [];
+        let eventSource = event.getSource();
+        let opportunityProductsToIterate = component.get("v.tableRecords");
+        let opportunityProductsToUpsert = [];
+        let opportunityProductsToDelete = [];
 
-        for (var i = 0; i < opportunityProductsToIterate.length; i++) {
-            var oppProd = opportunityProductsToIterate[i];
+        for (let i = 0; i < opportunityProductsToIterate.length; i++) {
+            let oppProd = opportunityProductsToIterate[i];
 
             if (this.oppProdIsToReplace(oppProd)) {
                 let oppProductOld = this.createOppProdToDelete(oppProd);
@@ -97,6 +53,7 @@
             if (this.oppProdIsToUpgrade(oppProd)) {
                 let oppProduct = this.createOppProdToUpdate(oppProd);
                 opportunityProductsToUpsert.push(oppProduct);
+
             }
         }
 
@@ -105,7 +62,7 @@
         }
 
         if (opportunityProductsToDelete.length) {
-            this.deleteOpportunityLineItems(component, opportunityProductsToDelete);
+           this.deleteOpportunityLineItems(component, opportunityProductsToDelete);
         }
     },
 
@@ -131,12 +88,14 @@
     },
 
     oppProdIsToReplace: function (oppProd) {
-        return oppProd.productToUpgrade !== '' && oppProd.Product2Id !== oppProd.productToUpgrade;
+
+        return !$A.util.isEmpty(oppProd.productToUpgrade) && oppProd.Product2Id !== oppProd.productToUpgrade;
     },
 
 
     oppProdIsToUpgrade: function (oppProd) {
-        return oppProd.productToUpgrade === '';
+
+        return $A.util.isEmpty(oppProd.productToUpgrade);
     },
 
     createOppProdToDelete: function (oppProd) {
@@ -147,36 +106,18 @@
     },
 
     createOppProdToInsert: function (oppProd) {
-        return {
-            'sobjectType': 'OpportunityLineItem',
-            'OpportunityId': oppProd.OpportunityId,
-            'Product2Id': oppProd.productToUpgrade,
-            'Quantity': oppProd.Quantity,
-            'UnitPrice': oppProd.UnitPrice,
-            'ServiceDate': oppProd.ServiceDate,
-            'Description' : oppProd.Description
-        };
+        oppProd.Id = undefined;
+        oppProd.attributes = undefined;
+        oppProd.Product2 = undefined;
+        oppProd.Product2Id = oppProd.productToUpgrade;
+        return oppProd;
     },
 
     createOppProdToUpdate : function (oppProd) {
-        return {
-            'sobjectType': 'OpportunityLineItem',
-            'Id': oppProd.Id,
-            'OpportunityId': oppProd.OpportunityId,
-            'Quantity': oppProd.Quantity,
-            'UnitPrice': oppProd.UnitPrice,
-            'ServiceDate': oppProd.ServiceDate,
-            'Description' : oppProd.Description
-        };
-    },
-
-    handleOppProdFields : function (oppProds){
-        for (var i = 0; i < oppProds.length; i++) {
-            var oppProd = oppProds[i];
-            oppProd.productToUpgrade = "";
-            if (oppProd.Product2) oppProd.Product2 = oppProd.Product2.Name;
-        }
-        return oppProds;
+        oppProd.attributes = undefined;
+        oppProd.Product2 = undefined;
+        oppProd.Product2Id = undefined;
+        return oppProd;
     },
 
     closePage : function (oppProds){
@@ -191,7 +132,31 @@
             "contents": contents
         });
         messageEvent.fire();
+    },
+
+    updateParentRecordId : function (component) {
+        let oppId = component.get("v.recordId");
+        component.set("v.parentRecordId", oppId);
+    },
+
+    getFieldNames: function (fieldSetValues) {
+        let fieldSetNames = new Set();
+        for (let c = 0; c < fieldSetValues.length; c++) {
+            if (!fieldSetNames.has(fieldSetValues[c].name)) {
+                fieldSetNames.add(fieldSetValues[c].name);
+                if (fieldSetValues[c].type === 'REFERENCE') {
+                    if (fieldSetValues[c].name.indexOf('__c') === -1) {
+                        fieldSetNames.add(fieldSetValues[c].name.substring(
+                            0, fieldSetValues[c].name.indexOf('Id')) + '.Name');
+                    } else {
+                        fieldSetNames.add(fieldSetValues[c].name.substring(
+                            0, fieldSetValues[c].name.indexOf('__c')) + '__r.Name');
+                    }
+                }
+            }
+        }
+        let fieldNames = [];
+        fieldSetNames.forEach(v => fieldNames.push(v));
+        return fieldNames;
     }
-
-
 });

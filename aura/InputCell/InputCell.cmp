@@ -1,0 +1,20 @@
+<aura:component description="InputCell">
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="c:UpdateProduct" action="{!c.handleChangeProduct}"/>
+
+    <aura:attribute name="fieldValue" type="SObject" />
+    <aura:attribute name="field" type="String" access="private"/>
+
+    <aura:attribute name="updateRecord" type="SObject" />
+
+    <lightning:input
+            type="{!v.field.type}"
+            aura:id="userinput"
+            variant="label-hidden"
+            name="{!v.field.name}"
+            value="{!v.field.fieldValue}"
+            class="leftspace"
+            label=''
+    />
+</aura:component>

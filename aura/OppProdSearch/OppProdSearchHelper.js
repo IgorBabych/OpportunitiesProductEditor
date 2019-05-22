@@ -30,28 +30,28 @@
     setSelectedRecord: function (component, event, helper) {
         var resultBox = component.find('resultBox');
         $A.util.removeClass(resultBox, 'slds-is-open');
-        let oldRecord = component.get('v.updateRecord');
         let recordForUpdate = component.get('v.updateRecord');
         recordForUpdate.UnitPrice = event.currentTarget.dataset.price;
+        recordForUpdate.Name = event.currentTarget.dataset.name;
+        recordForUpdate.productToUpgrade = event.currentTarget.id;
         component.set('v.updateRecord', recordForUpdate);
-        var recAtt = component.get("v.updateRecord");
-        alert(recAtt.UnitPrice);
-        component.set("v.updatedRecordId", event.currentTarget.id);
-        component.find('userinput').set("v.readonly", true);
-        var updateProductEvent = component.getEvent("UpdateProduct");
-        updateProductEvent.setParams({
-            "oldValue": oldRecord,
-            "fieldLabel": 'price',
-            "newWalue": recordForUpdate
-        });
 
-        console.log('was fired');
+        component.find('userinput').set("v.readonly", true);
+        let updateProductEvent = $A.get("e.c:UpdateProduct");
+        updateProductEvent.setParams({
+            "UnitPrice": event.currentTarget.dataset.price,
+        });
         updateProductEvent.fire();
     },
 
     resetData: function (component, event, helper) {
-        component.set("v.selectRecordName", "");
+        component.set("v.recordName", "");
         component.find('userinput').set("v.readonly", false);
-    }
+    },
 
-})
+    setRecordName: function (component) {
+        let updateRecord = component.get("v.updateRecord");
+        let recordName = updateRecord.Product2.Name;
+        component.set('v.recordName', recordName);
+    }
+});

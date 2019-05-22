@@ -1,4 +1,8 @@
 ({
+    doInit: function (component, event, helper) {
+        helper.setRecordName(component, event);
+    },
+
     searchFieldController: function (component, event, helper) {
         helper.searchField(component, event);
     },

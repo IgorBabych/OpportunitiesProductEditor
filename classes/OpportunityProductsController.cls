@@ -1,16 +1,4 @@
 public with sharing class OpportunityProductsController {
-    @AuraEnabled
-    public static List<OpportunityLineItem> getOpportunityLineItems(String oppId) {
-
-    List<OpportunityLineItem> oppLineItem = new List<OpportunityLineItem>(
-        [
-                SELECT Id, OpportunityId, Product2Id, Product2.Name, Quantity, UnitPrice, ServiceDate, Description
-                FROM OpportunityLineItem
-                WHERE OpportunityId =: oppId
-        ]
-        );
-        return oppLineItem;
-    }
 
     @AuraEnabled
     public static String getFieldSet(String sObjectName, String fieldSetName) {
@@ -20,7 +8,7 @@ public with sharing class OpportunityProductsController {
             Schema.DescribeSObjectResult d = objToken.getDescribe();
             Map<String, Schema.FieldSet> FsMap = d.fieldSets.getMap();
             system.debug('>>>>>>> FsMap >>> ' + FsMap);
-            if(FsMap.containsKey(fieldSetName))
+            if(FsMap.containsKey(fieldSetName)){
                 for(Schema.FieldSetMember f : FsMap.get(fieldSetName).getFields()) {
                     if(result != ''){
                         result += ',';
@@ -33,6 +21,7 @@ public with sharing class OpportunityProductsController {
                     jsonPart += '}';
                     result += jsonPart;
                 }
+            }
         }
         catch(Exception e){
             result += e.getLineNumber() + ' : ' + e.getMessage();
@@ -47,10 +36,19 @@ public with sharing class OpportunityProductsController {
         String result = '[]';
         try{
             List<String> fieldNames = (List<String>) JSON.deserialize(fieldNameJson, List<String>.class);
-            Set<String> setFieldNames = new Set<String>();
-            String query = 'SELECT ' + String.join(fieldNames, ',') + ' FROM ' + sObjectName;
-            if(parentFieldName != NULL && parentFieldName != '' && parentRecordId != NULL){
-                query += ' WHERE ' + parentFieldName + '= \'' +  parentRecordId + '\'';
+            fieldNames.add('OpportunityId');
+            String query =
+                    'SELECT '
+                            + String.join(fieldNames, ',')
+                            + ' FROM ' + sObjectName;
+
+            if(parentFieldName != NULL
+                    && parentFieldName != ''
+                    && parentRecordId != NULL){
+                query +=
+                        ' WHERE '
+                                + parentFieldName +
+                                '= \'' +  parentRecordId + '\'';
             }
             for(sObject s : Database.query(query)){
                 lstResult.add(s);
@@ -62,7 +60,6 @@ public with sharing class OpportunityProductsController {
         catch(Exception e){
             result += e.getLineNumber() + ' : ' + e.getMessage();
         }
-        System.debug(JSON.serialize(result));
         return result;
     }
 
