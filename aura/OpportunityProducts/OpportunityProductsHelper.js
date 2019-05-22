@@ -14,7 +14,7 @@
         });
         $A.enqueueAction(action);
     },
-    
+
     getTableRows : function(component, event, helper){
         let action = component.get("c.getRecords");
         let fieldSetValues = component.get("v.fieldSetValues");
