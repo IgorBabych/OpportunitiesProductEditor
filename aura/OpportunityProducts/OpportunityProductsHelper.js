@@ -1,31 +1,47 @@
 ({
-    getOpportunityLineItems: function (component, event, helper) {
-        var action = component.get("c.getOpportunityLineItems");
-        const oppId = component.get("v.recordId");
-        component.set("v.opportunityId", oppId);
-        action.setParam("oppId", oppId);
-        action.setCallback(this, function (response) {
-            var state = response.getState();
-            if (state === "SUCCESS") {
-                var oppProd = response.getReturnValue();
-                var updatedOppProd = this.handleOppProdFields (oppProd);
-                component.set("v.opportunityProducts", updatedOppProd);
-            } else {
-                this.showToast('error', "Failed with state: " + state);
-            }
+
+    getTableFieldSet : function(component, event, helper) {
+        var action = component.get("c.getFieldSet");
+        action.setParams({
+            sObjectName: component.get("v.sObjectName"),
+            fieldSetName: component.get("v.fieldSetName")
+        });
+
+        action.setCallback(this, function(response) {
+            var fieldSetObj = JSON.parse(response.getReturnValue());
+            component.set("v.fieldSetValues", fieldSetObj);
+            helper.getTableRows(component, event, helper);
         });
         $A.enqueueAction(action);
     },
 
+    getTableRows : function(component, event, helper){
+        let action = component.get("c.getRecords");
+        let fieldSetValues = component.get("v.fieldSetValues");
+        let fieldNames = this.getFieldNames(fieldSetValues);
+
+        action.setParams({
+            sObjectName: component.get("v.sObjectName"),
+            parentFieldName: component.get("v.parentFieldName"),
+            parentRecordId: component.get("v.parentRecordId"),
+            fieldNameJson: JSON.stringify(fieldNames)
+        });
+console.log(JSON.stringify(fieldNames));
+        action.setCallback(this, function(response) {
+            let tableRecords = JSON.parse(response.getReturnValue());
+            component.set("v.tableRecords", tableRecords);
+        });
+        $A.enqueueAction(action);
+    },
 
     updateOpportunityLineItems: function (component, event, helper) {
-        var eventSource = event.getSource();
-        var opportunityProductsToIterate = component.get("v.opportunityProducts");
-        var opportunityProductsToUpsert = [];
-        var opportunityProductsToDelete = [];
+        let eventSource = event.getSource();
+        let opportunityProductsToIterate = component.get("v.tableRecords");
+        let opportunityProductsToUpsert = [];
+        let opportunityProductsToDelete = [];
 
-        for (var i = 0; i < opportunityProductsToIterate.length; i++) {
-            var oppProd = opportunityProductsToIterate[i];
+        for (let i = 0; i < opportunityProductsToIterate.length; i++) {
+            let oppProd = opportunityProductsToIterate[i];
 
             if (this.oppProdIsToReplace(oppProd)) {
                 let oppProductOld = this.createOppProdToDelete(oppProd);
@@ -37,6 +53,7 @@
             if (this.oppProdIsToUpgrade(oppProd)) {
                 let oppProduct = this.createOppProdToUpdate(oppProd);
                 opportunityProductsToUpsert.push(oppProduct);
+
             }
         }
 
@@ -45,7 +62,7 @@
         }
 
         if (opportunityProductsToDelete.length) {
-            this.deleteOpportunityLineItems(component, opportunityProductsToDelete);
+           this.deleteOpportunityLineItems(component, opportunityProductsToDelete);
         }
     },
 
@@ -55,8 +72,7 @@
         action.setCallback(this, function (response) {
             let state = response.getState();
             if (state === "SUCCESS") {
-                this.showToast('success', 'Changes saved!');
-                $A.get('e.force:refreshView').fire();
+                this.showToast('success', 'Changes saved!')
             } else {
                 this.showToast('error', 'Changes ' + state);
             }
@@ -71,12 +87,14 @@
     },
 
     oppProdIsToReplace: function (oppProd) {
-        return oppProd.productToUpgrade !== '' && oppProd.Product2Id !== oppProd.productToUpgrade;
+
+        return !$A.util.isEmpty(oppProd.productToUpgrade) && oppProd.Product2Id !== oppProd.productToUpgrade;
     },
 
 
     oppProdIsToUpgrade: function (oppProd) {
-        return oppProd.productToUpgrade === '';
+
+        return $A.util.isEmpty(oppProd.productToUpgrade);
     },
 
     createOppProdToDelete: function (oppProd) {
@@ -87,67 +105,57 @@
     },
 
     createOppProdToInsert: function (oppProd) {
-        return {
-            'sobjectType': 'OpportunityLineItem',
-            'OpportunityId': oppProd.OpportunityId,
-            'Product2Id': oppProd.productToUpgrade,
-            'Quantity': oppProd.Quantity,
-            'UnitPrice': oppProd.UnitPrice,
-            'ServiceDate': oppProd.ServiceDate,
-            'Description' : oppProd.Description
-        };
+        oppProd.Id = undefined;
+        oppProd.attributes = undefined;
+        oppProd.Product2 = undefined;
+        oppProd.Product2Id = oppProd.productToUpgrade;
+        return oppProd;
     },
 
     createOppProdToUpdate : function (oppProd) {
-        return {
-            'sobjectType': 'OpportunityLineItem',
-            'Id': oppProd.Id,
-            'OpportunityId': oppProd.OpportunityId,
-            'Quantity': oppProd.Quantity,
-            'UnitPrice': oppProd.UnitPrice,
-            'ServiceDate': oppProd.ServiceDate,
-            'Description' : oppProd.Description
-        };
-    },
-
-    handleOppProdFields : function (oppProds){
-        for (var i = 0; i < oppProds.length; i++) {
-            var oppProd = oppProds[i];
-            oppProd.productToUpgrade = "";
-            if (oppProd.Product2) oppProd.Product2 = oppProd.Product2.Name;
-        }
-        return oppProds;
+        oppProd.attributes = undefined;
+        oppProd.Product2 = undefined;
+        oppProd.Product2Id = undefined;
+        return oppProd;
     },
 
     closePage : function (oppProds){
         $A.get('e.force:closeQuickAction').fire();
     },
 
-
-    showToast : function(state, contents) {
-        var messageEvent = $A.get("e.c:ToastMessageEvent");
-        messageEvent.setParams({
-            "state": state,
-            "contents": contents
+    showToast : function(type, contents) {
+        var toastEvent = $A.get("e.force:showToast");
+        toastEvent.setParams({
+            type: type,
+            title: type,
+            message: contents
         });
-        messageEvent.fire();
+        toastEvent.fire();
     },
 
+    updateParentRecordId : function (component) {
+        let oppId = component.get("v.recordId");
+        component.set("v.parentRecordId", oppId);
+    },
 
-    handleRowAction: function (cmp, event, helper) {
-        var action = event.getParam('action');
-        var row = event.getParam('row');
-        switch (action.name) {
-            case 'show_details':
-                alert('Showing Details: ' + JSON.stringify(row));
-                break;
-            case 'delete':
-                var rows = cmp.get('v.mydata');
-                var rowIndex = rows.indexOf(row);
-                rows.splice(rowIndex, 1);
-                cmp.set('v.mydata', rows);
-                break;
+    getFieldNames: function (fieldSetValues) {
+        let fieldSetNames = new Set();
+        for (let c = 0; c < fieldSetValues.length; c++) {
+            if (!fieldSetNames.has(fieldSetValues[c].name)) {
+                fieldSetNames.add(fieldSetValues[c].name);
+                if (fieldSetValues[c].type === 'REFERENCE') {
+                    if (fieldSetValues[c].name.indexOf('__c') === -1) {
+                        fieldSetNames.add(fieldSetValues[c].name.substring(
+                            0, fieldSetValues[c].name.indexOf('Id')) + '.Name');
+                    } else {
+                        fieldSetNames.add(fieldSetValues[c].name.substring(
+                            0, fieldSetValues[c].name.indexOf('__c')) + '__r.Name');
+                    }
+                }
+            }
         }
-    },
-
+        let fieldNames = [];
+        fieldSetNames.forEach(v => fieldNames.push(v));
+        return fieldNames;
+    }
 });

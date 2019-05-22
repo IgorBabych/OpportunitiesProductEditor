@@ -5,35 +5,15 @@
                     force:lightningQuickActionWithoutHeader,
                     flexipage:availableForRecordHome">
 
-<!--    <lightning:notificationsLibrary aura:id="notifLib"/>-->
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
 
-    <aura:handler
-            name="init"
-            action="{!c.doInit}"
-            value="{!this}"/>
+    <aura:attribute name="sObjectName" type="String" default="OpportunityLineItem"/>
+    <aura:attribute name="fieldSetName" type="String" default="EditProductsPage"/>
+    <aura:attribute name="parentFieldName" type="String" default="OpportunityId"/>
+    <aura:attribute name="parentRecordId" type="String"/>
 
-    <aura:registerEvent name="messageEvent" type="c:ToastMessageEvent" />
-
-    <aura:attribute
-            name="opportunityProducts"
-            type="OpportunityLineItem[]"/>
-    <aura:attribute
-            name="opportunityId"
-            type="String"/>
-    <aura:attribute
-            name="data"
-            type="Object"/>
-    <aura:attribute
-            name="columns"
-            type="List"/>
-    <aura:attribute
-            name="errors"
-            type="Object"
-            default="[]"/>
-    <aura:attribute
-            name="draftValues"
-            type="Object"
-            default="[]"/>
+    <aura:attribute name="fieldSetValues" type="List"/>
+    <aura:attribute name="tableRecords" type="List"/>
 
 
     <aura:html tag="style">
@@ -52,76 +32,47 @@
         }
     </aura:html>
 
-    <c:ToastMessage timeout = "1000"/>
+    <c:ToastMessage timeout="1000"/>
 
-    <div class="slds-p-around_medium
-                slds-text-align_center
-                slds-text-heading_medium">
+    <div class="slds-p-around_medium slds-text-align_center slds-text-heading_medium">
         <h1>
             Edit All Products
         </h1>
     </div>
 
+
     <div class="slds-table--header-fixed_container" style="height:300px">
         <div class="slds-scrollable" style="height:100%;">
+        <table class="slds-table slds-table--bordered">
+            <thead>
+            <tr>
+                <aura:iteration items="{!v.fieldSetValues}" var="field">
+                    <th scope="col">
+                        <div class="slds-truncate" title="{!field.label}"> {!field.label} </div>
+                    </th>
+                </aura:iteration>
+            </tr>
+            </thead>
+            <tbody>
 
-    <table class="slds-table
-                    slds-table_cell-buffer
-                    slds-table_bordered
-           slds-table--header-fixed">
-        <thead>
-        <tr>
-            <th scope="col">
-                <div class="slds-truncate slds-cell-fixed" title="PRODUCT">PRODUCT</div>
-            </th>
-            <th scope="col">
-                <div class="slds-truncate slds-cell-fixed" title="QUANTITY">QUANTITY</div>
+                <aura:iteration items="{!v.tableRecords}"
+                                var="row">
+                        <c:OpportunityLineItem opportunityId="{!v.parentRecordId}"
+                                               opportunityProduct="{!row}"
+                                               fieldSetValues="{!v.fieldSetValues}"/>
+                </aura:iteration>
 
-            </th>
-            <th scope="col">
-                <div class="slds-truncate slds-cell-fixed" title="SALES PRICE">SALES PRICE</div>
-
-            </th>
-            <th scope="col">
-                <div class="slds-truncate slds-cell-fixed" title="DATE">DATE</div>
-
-            </th>
-            <th scope="col">
-                <div class="slds-truncate slds-cell-fixed" title="LINE DESCRIPTION">LINE DESCRIPTION</div>
-
-            </th>
-        </tr>
-        </thead>
-
-        <tbody>
-
-        <aura:iteration
-                items="{!v.opportunityProducts}"
-                var="opportunityProduct"
-                indexVar="idx">
-            <c:OpportunityLineItem
-                    opportunityProducts="{!opportunityProduct}"
-                    index="{!opportunityProduct.Product2Id}"
-                    opportunityId="{!v.opportunityId}"
-                    />
-        </aura:iteration>
-
-        </tbody>
-
-    </table>
+            </tbody>
+        </table>
         </div>
     </div>
-    <div class="slds-p-around_small
-                slds-text-align_right">
+
+    <div class="slds-p-around_small slds-text-align_right">
 
         <lightning:button
                 label="Cancel"
                 onclick="{!c.clickCancelButton}"/>
 
-        <lightning:button
-                label="Show Notice"
-                onclick="{!c.clickReloadDataButton}"
-        name="notice" />
         <lightning:button
                 label="Save"
                 variant="brand"

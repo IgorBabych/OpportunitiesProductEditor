@@ -20,7 +20,7 @@
             if (state === "SUCCESS") {
                 component.set("v.searchRecords", response.getReturnValue());
             } else {
-                console.log("Failed with state: " + state);
+                this.showCustomToast("error", "Failed with state: " + state);
             }
             component.set("v.LoadingText", false);
         });
@@ -30,15 +30,35 @@
     setSelectedRecord: function (component, event, helper) {
         var resultBox = component.find('resultBox');
         $A.util.removeClass(resultBox, 'slds-is-open');
-        component.set("v.selectRecordName", event.currentTarget.dataset.name);
-        component.set("v.updateUnitPrice", event.currentTarget.dataset.price);
-        component.set("v.updatedRecordId", event.currentTarget.id);
+        let recordForUpdate = component.get('v.updateRecord');
+        recordForUpdate.UnitPrice = event.currentTarget.dataset.price;
+        recordForUpdate.Name = event.currentTarget.dataset.name;
+        recordForUpdate.productToUpgrade = event.currentTarget.id;
+        component.set('v.updateRecord', recordForUpdate);
+
         component.find('userinput').set("v.readonly", true);
+        let updateProductEvent = component.getEvent("UpdateProductEvent");
+        updateProductEvent.fire();
     },
 
     resetData: function (component, event, helper) {
-        component.set("v.selectRecordName", "");
+        component.set("v.recordName", "");
         component.find('userinput').set("v.readonly", false);
-    }
+    },
 
-})
+    setRecordName: function (component) {
+        let updateRecord = component.get("v.updateRecord");
+        let recordName = updateRecord.Product2.Name;
+        component.set('v.recordName', recordName);
+    },
+
+    showCustomToast : function(state, contents) {
+        var messageEvent = $A.get("e.c:ToastMessageEvent");
+        messageEvent.setParams({
+            "state": state,
+            "contents": contents
+        });
+        messageEvent.fire();
+    },
+
+});

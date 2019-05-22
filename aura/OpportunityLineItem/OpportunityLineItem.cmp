@@ -1,59 +1,44 @@
 <aura:component description="OpportunityLineItem">
 
-    <aura:attribute name="opportunityProducts" type="OpportunityLineItem"/>
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    <aura:handler name="UpdateProductEvent" event="c:UpdateProductEvent" action="{!c.handleSelectedProductEvent}"/>
+
     <aura:attribute name="opportunityId" type="String"/>
-    <aura:attribute name="index" type="Id"/>
+    <aura:attribute name="opportunityProduct" type="SObject"/>
+    <aura:attribute name="fieldSetValues" type="List"/>
+    <aura:attribute name="cells" type="List"/>
+    <aura:attribute name="fieldNames" type="String"/>
+
 
     <tr>
-        <td style="width: 40%">
-            <c:OppProdSearch
-                    updateUnitPrice="{!v.opportunityProducts.UnitPrice}"
-                    selectRecordName="{!v.opportunityProducts.Product2}"
-                    required="false"
-                    iconName="standard:product"
-                    updatedRecordId="{!v.opportunityProducts.productToUpgrade}"
-                    opportunityId="{!v.opportunityId}"
-                    />
 
-        </td>
-        <td>
-            <lightning:input
-                    type="number"
-                    variant="label-hidden"
-                    name="Quantity"
-                    value="{!v.opportunityProducts.Quantity}"
-                    label=''/>
-        </td>
+        <aura:iteration items="{!v.cells}" var="cell">
+            <td>
 
-        <td>
-            <lightning:input
-                    type="number"
-                    variant="label-hidden"
-                    name="UnitPrice"
-                    value="{!v.opportunityProducts.UnitPrice}"
-                    label=''/>
-        </td>
+                <aura:if isTrue="{!cell.name == 'Product2Id'}">
+                    <c:OppProdSearch
+                            updateRecord="{!v.opportunityProduct}"
+                            opportunityId="{!v.opportunityId}"/>
 
-        <td>
-            <lightning:input
-                    value="{!v.opportunityProducts.ServiceDate}"
-                    label=''
-                    class="field"
-                    type="date"
-                    variant="label-hidden"
-                    name="ServiceDate"
-            />
+                    <aura:set attribute="else">
+                        <lightning:input
+                                type="{!cell.type}"
+                                required="{!cell.required}"
+                                aura:id="userinput"
+                                variant="label-hidden"
+                                name="{!cell.name}"
+                                value="{!cell.fieldValue}"
+                                class="leftspace"
+                                onchange="{!c.handleInputField}"
+                                label=''
 
-        </td>
+                        />
+                    </aura:set>
+                </aura:if>
 
-        <td>
-            <lightning:input
-                    type="text"
-                    variant="label-hidden"
-                    name="description"
-                    value="{!v.opportunityProducts.Description}"
-                    label=''/>
-        </td>
+            </td>
+        </aura:iteration>
+
     </tr>
 
 </aura:component>

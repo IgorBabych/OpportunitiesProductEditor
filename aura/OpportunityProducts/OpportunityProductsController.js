@@ -1,19 +1,17 @@
 ({
     doInit: function (component, event, helper) {
-        helper.getOpportunityLineItems(component);
+        helper.updateParentRecordId(component);
+        helper.getTableFieldSet(component, event, helper);
     },
-
 
     clickSaveButton: function (component, event, helper) {
         helper.updateOpportunityLineItems(component, event);
-        helper.getOpportunityLineItems(component);
-    },
+        helper.closePage(component);
+        $A.get('e.force:refreshView').fire();
 
-    clickReloadDataButton: function (component, event, helper) {
-        helper.showToast("error", "button test message");
     },
 
     clickCancelButton: function (component, event, helper) {
         helper.closePage(component);
     }
-})
+});
