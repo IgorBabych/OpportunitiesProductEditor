@@ -20,7 +20,7 @@
             if (state === "SUCCESS") {
                 component.set("v.searchRecords", response.getReturnValue());
             } else {
-                console.log("Failed with state: " + state);
+                this.showCustomToast("error", "Failed with state: " + state);
             }
             component.set("v.LoadingText", false);
         });
@@ -37,10 +37,7 @@
         component.set('v.updateRecord', recordForUpdate);
 
         component.find('userinput').set("v.readonly", true);
-        let updateProductEvent = $A.get("e.c:UpdateProduct");
-        updateProductEvent.setParams({
-            "UnitPrice": event.currentTarget.dataset.price,
-        });
+        let updateProductEvent = component.getEvent("UpdateProductEvent");
         updateProductEvent.fire();
     },
 
@@ -53,5 +50,15 @@
         let updateRecord = component.get("v.updateRecord");
         let recordName = updateRecord.Product2.Name;
         component.set('v.recordName', recordName);
-    }
+    },
+
+    showCustomToast : function(state, contents) {
+        var messageEvent = $A.get("e.c:ToastMessageEvent");
+        messageEvent.setParams({
+            "state": state,
+            "contents": contents
+        });
+        messageEvent.fire();
+    },
+
 });

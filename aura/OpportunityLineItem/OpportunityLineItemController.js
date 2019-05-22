@@ -1,14 +1,14 @@
 ({
     doInit: function (component, event, helper) {
-        helper.updateComponentFieldValues(component, event);
+        helper.updateComponentCells(component, event);
     },
 
     handleSelectedProductEvent: function (component, event, helper) {
-        helper.refreshComponentFieldValues(component, event);
+        helper.refreshComponentcells(component, event);
     },
 
     handleInputField: function (component, event, helper){
-        helper.refreshInputField(component, event, helper);
+        helper.updateDataToRecord(component, event, helper);
     }
 
 });

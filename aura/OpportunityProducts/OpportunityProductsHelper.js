@@ -14,7 +14,7 @@
         });
         $A.enqueueAction(action);
     },
-
+    
     getTableRows : function(component, event, helper){
         let action = component.get("c.getRecords");
         let fieldSetValues = component.get("v.fieldSetValues");
@@ -26,7 +26,7 @@
             parentRecordId: component.get("v.parentRecordId"),
             fieldNameJson: JSON.stringify(fieldNames)
         });
-
+console.log(JSON.stringify(fieldNames));
         action.setCallback(this, function(response) {
             let tableRecords = JSON.parse(response.getReturnValue());
             component.set("v.tableRecords", tableRecords);
@@ -72,8 +72,7 @@
         action.setCallback(this, function (response) {
             let state = response.getState();
             if (state === "SUCCESS") {
-                this.showToast('success', 'Changes saved!');
-                $A.get('e.force:refreshView').fire();
+                this.showToast('success', 'Changes saved!')
             } else {
                 this.showToast('error', 'Changes ' + state);
             }
@@ -124,14 +123,14 @@
         $A.get('e.force:closeQuickAction').fire();
     },
 
-
-    showToast : function(state, contents) {
-        var messageEvent = $A.get("e.c:ToastMessageEvent");
-        messageEvent.setParams({
-            "state": state,
-            "contents": contents
+    showToast : function(type, contents) {
+        var toastEvent = $A.get("e.force:showToast");
+        toastEvent.setParams({
+            type: type,
+            title: type,
+            message: contents
         });
-        messageEvent.fire();
+        toastEvent.fire();
     },
 
     updateParentRecordId : function (component) {

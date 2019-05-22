@@ -1,7 +1,8 @@
 <aura:component
         controller="OpportunityProductSearchController">
 
-    <aura:registerEvent name="UpdateProduct" type="c:UpdateProduct"/>
+    <aura:registerEvent name="UpdateProductEvent" type="c:UpdateProductEvent"/>
+    <aura:registerEvent name="messageEvent" type="c:ToastMessageEvent"/>
 
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
 

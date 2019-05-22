@@ -1,39 +1,44 @@
 <aura:component description="OpportunityLineItem">
 
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
-    <aura:handler event="c:UpdateProduct" action="{!c.handleSelectedProductEvent}"/>
+    <aura:handler name="UpdateProductEvent" event="c:UpdateProductEvent" action="{!c.handleSelectedProductEvent}"/>
 
     <aura:attribute name="opportunityId" type="String"/>
     <aura:attribute name="opportunityProduct" type="SObject"/>
     <aura:attribute name="fieldSetValues" type="List"/>
-    <aura:attribute name="fieldValues" type="List"/>
+    <aura:attribute name="cells" type="List"/>
     <aura:attribute name="fieldNames" type="String"/>
 
 
     <tr>
-        <aura:iteration items="{!v.fieldValues}" var="fieldValue">
+
+        <aura:iteration items="{!v.cells}" var="cell">
             <td>
 
-                <aura:if isTrue="{!fieldValue.name == 'Product2Id'}">
+                <aura:if isTrue="{!cell.name == 'Product2Id'}">
                     <c:OppProdSearch
                             updateRecord="{!v.opportunityProduct}"
                             opportunityId="{!v.opportunityId}"/>
 
                     <aura:set attribute="else">
                         <lightning:input
-                                type="{!fieldValue.type}"
+                                type="{!cell.type}"
+                                required="{!cell.required}"
                                 aura:id="userinput"
                                 variant="label-hidden"
-                                name="{!fieldValue.name}"
-                                value="{!fieldValue.fieldValue}"
+                                name="{!cell.name}"
+                                value="{!cell.fieldValue}"
                                 class="leftspace"
                                 onchange="{!c.handleInputField}"
-                                label=''/>
+                                label=''
 
+                        />
                     </aura:set>
                 </aura:if>
+
             </td>
         </aura:iteration>
+
     </tr>
 
 </aura:component>

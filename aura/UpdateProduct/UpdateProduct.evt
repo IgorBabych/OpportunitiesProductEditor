@@ -1,7 +1,0 @@
-<!--
- - Created by Igor Babych on 16.05.2019.
- -->
-
-<aura:event type="APPLICATION" description="UpdateProduct">
-    <aura:attribute name="UnitPrice" type="String" />
-</aura:event>

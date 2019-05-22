@@ -7,8 +7,6 @@
 
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
 
-    <aura:registerEvent name="messageEvent" type="c:ToastMessageEvent"/>
-
     <aura:attribute name="sObjectName" type="String" default="OpportunityLineItem"/>
     <aura:attribute name="fieldSetName" type="String" default="EditProductsPage"/>
     <aura:attribute name="parentFieldName" type="String" default="OpportunityId"/>
