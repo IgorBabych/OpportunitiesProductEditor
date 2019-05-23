@@ -26,7 +26,6 @@
             parentRecordId: component.get("v.parentRecordId"),
             fieldNameJson: JSON.stringify(fieldNames)
         });
-console.log(JSON.stringify(fieldNames));
         action.setCallback(this, function(response) {
             let tableRecords = JSON.parse(response.getReturnValue());
             component.set("v.tableRecords", tableRecords);

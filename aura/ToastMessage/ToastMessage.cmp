@@ -5,11 +5,8 @@
     <aura:attribute name="state" type="String" />
     <aura:attribute name="toastTheme" type="String" />
     <aura:attribute name="iconTheme" type="String" />
-    <aura:attribute name="timeout" type="Integer" />
-    <aura:attribute
-            name="iconName"
-            type="String"
-            default="action:approval"/>
+    <aura:attribute name="timeout" type="Integer" default="1000"/>
+    <aura:attribute name="iconName" type="String" default="action:approval"/>
 
 
     <aura:handler event="c:ToastMessageEvent"
