@@ -1,0 +1,19 @@
+<aura:component description="TestComponent">
+    <aura:attribute name="expenses" type="Expense__c[]"/>
+    <aura:iteration items="{!v.expenses}" var="lead" indexVar="i">
+        <tr>
+            <td>
+                <ui:button label="Remove" press="{!c.handleRemoveLeadButtonClick}">
+                    <span data-index="{!i}"></span>
+                </ui:button>
+                <a href="#" data-index="{!i}" onclick="{!c.handleRemoveLeadAnchorClick}">
+                    Remove
+                </a>
+            </td>
+            <td>{!lead.Name}</td>
+            <td>{!lead.Amount__c}</td>
+            <td>{!lead.Client__c}</td>
+            <td>{!lead.Date__c}</td>
+        </tr>
+    </aura:iteration>
+</aura:component>

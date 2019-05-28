@@ -1,9 +1,7 @@
 <aura:component
         description="OpportunityProducts"
         controller="OpportunityProductsController"
-        implements="force:hasRecordId,
-                    force:lightningQuickActionWithoutHeader,
-                    flexipage:availableForRecordHome">
+        implements="force:hasRecordId,force:lightningQuickActionWithoutHeader,flexipage:availableForRecordHome">
 
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
 
@@ -79,4 +77,3 @@
                 onclick="{!c.clickSaveButton}"/>
     </div>
 </aura:component>
-
