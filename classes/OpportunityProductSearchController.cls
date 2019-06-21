@@ -21,8 +21,8 @@ public class OpportunityProductSearchController {
                                 SELECT Pricebook2Id
                                 FROM Opportunity
                                 WHERE Id = :opportunityId
-                        ) AND Name
-                        LIKE :value
+                        )
+                AND Name LIKE :value
                 LIMIT 25
         ];
 
@@ -45,9 +45,9 @@ public class OpportunityProductSearchController {
         public Id recId;
 
         public SObjectResult(String recNameTemp, Id recIdTemp, Decimal recPriceTemp) {
-            recName = recNameTemp;
-            recId = recIdTemp;
-            recPrice = recPriceTemp;
+            this.recName = recNameTemp;
+            this.recId = recIdTemp;
+            this.recPrice = recPriceTemp;
         }
     }
 }

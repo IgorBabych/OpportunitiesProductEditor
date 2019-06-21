@@ -9,6 +9,7 @@ public with sharing class OpportunityProductsController {
             Map<String, Schema.FieldSet> FsMap = d.fieldSets.getMap();
             system.debug('>>>>>>> FsMap >>> ' + FsMap);
             if(FsMap.containsKey(fieldSetName)){
+                return JSON.serialize(FsMap.get(fieldSetName).getFields());
                 for(Schema.FieldSetMember f : FsMap.get(fieldSetName).getFields()) {
                     if(result != ''){
                         result += ',';
@@ -24,6 +25,7 @@ public with sharing class OpportunityProductsController {
             }
         }
         catch(Exception e){
+            throw new AuraHandledException(e.getMessage());
             result += e.getLineNumber() + ' : ' + e.getMessage();
         }
         return '['+result+']';
@@ -47,12 +49,10 @@ public with sharing class OpportunityProductsController {
                     && parentRecordId != NULL){
                 query +=
                         ' WHERE '
-                                + parentFieldName +
-                                '= \'' +  parentRecordId + '\'';
+                                + parentFieldName + '= :parentRecordId';
             }
-            for(sObject s : Database.query(query)){
-                lstResult.add(s);
-            }
+            lstResult = Database.query(query);
+
             if(lstResult.size() > 0) {
                 result = JSON.serialize(lstResult);
             }
