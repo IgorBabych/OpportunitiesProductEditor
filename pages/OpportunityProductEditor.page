@@ -1,21 +1,28 @@
 <apex:page id="OpportunityProductEditor"
-        showHeader="false"
-        sidebar="false"
-        standardStylesheets="true"
-        standardController="Opportunity">
+           showHeader="false"
+           sidebar="false"
+           standardStylesheets="true"
+           standardController="Opportunity"
+           recordSetVar="records">
 
-    <apex:includeLightning />
-    <div id="oppProds"></div>
+    <apex:includeLightning/>
+    <div id="oppProds"> Test Page</div>
+    <apex:pageBlock>
+    You're looking at some related lists for {!opportunity.Name}
+    </apex:pageBlock>
+
+    <apex:relatedList list="OpportunityLineItem" />
+
     <script>
-        $Lightning.use("c:OpportunityProductApp", function () {
+/*        $Lightning.use("c:OpportunityProductApp", function () {
             $Lightning.createComponent("c:OpportunityProducts", {}, "oppProds",
                 function(cmp) {
                     console.log("Component created!");
                     console.log(cmp);
                 });
         });
-        recordId = Apexpages.currentPage().getParameters().get('Id');
-        alert(recordId);
+        recordId = Apexpages.currentPage().getParameters().get('Id');*/
+        /*alert("recordId");*/
     </script>
 
 </apex:page>

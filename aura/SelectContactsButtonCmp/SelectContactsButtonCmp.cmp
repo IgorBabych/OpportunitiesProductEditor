@@ -1,0 +1,4 @@
+<aura:component description="SelectContactsButtonCmp" implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:lightningQuickAction,forceCommunity:availableForAllPageTypes"
+                access="global">
+
+</aura:component>
